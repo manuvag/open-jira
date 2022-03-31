@@ -8,6 +8,8 @@ const handler = (req, res) =>{
       return updateEntry(req, res)
     case 'GET':
       return getEntry(req, res)
+    case 'DELETE':
+      return deleteEntry(req, res)
     default:
       return res.status(400).json({message: 'Metodo no existe'})
   }
@@ -26,6 +28,27 @@ const getEntry = async (req, res) => {
   }
 
   res.status(200).json(entry)
+}
+
+const deleteEntry = async (req, res) => {
+  const { id } = req.query
+
+  await db.connect()
+  const entryToDelete = await Entry.findById(id)
+  if(!entryToDelete){
+    await db.disconnect()
+    return res.status(400).json({ message: 'No hay registro con ese ID' })
+  }
+
+  try{
+    await Entry.findByIdAndDelete(id)
+    await db.disconnect()
+    return res.status(200).json({ message:'Exito al eliminar'})
+
+  }catch(e){
+    await db.disconnect()
+    res.status(400).json({message: 'Algo salio mal'})
+  }
 }
 
 

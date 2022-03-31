@@ -21,6 +21,11 @@ export const entriesReducer = ( state , action ) => {
 				...state,
 				entries: [...action.payload]
 			}
+		case '[Entry] Delete':
+			return {
+				...state, 
+				entries : [...action.payload]
+			}
 		default:
 			return state
 	}
